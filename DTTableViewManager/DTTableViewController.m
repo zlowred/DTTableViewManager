@@ -443,7 +443,10 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
                           withRowAnimation:self.insertRowAnimation];
     [self.tableView reloadRowsAtIndexPaths:update.updatedRowIndexPaths
                           withRowAnimation:self.reloadRowAnimation];
-    
+    [update.movedRowIndexPaths enumerateKeysAndObjectsUsingBlock: ^(id key, id obj, BOOL *stop) {
+        [self.tableView moveRowAtIndexPath:key toIndexPath:obj];
+    }];
+
     [self.tableView endUpdates];
 }
 
