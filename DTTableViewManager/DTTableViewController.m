@@ -428,15 +428,19 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 
 -(void)storageDidPerformUpdate:(DTStorageUpdate *)update
 {
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        [self.tableView reloadData];
+    }];
     [self.tableView beginUpdates];
-    
+
     [self.tableView deleteSections:update.deletedSectionIndexes
                   withRowAnimation:self.deleteSectionAnimation];
     [self.tableView insertSections:update.insertedSectionIndexes
                   withRowAnimation:self.insertSectionAnimation];
     [self.tableView reloadSections:update.updatedSectionIndexes
                   withRowAnimation:self.reloadSectionAnimation];
-    
+
     [self.tableView deleteRowsAtIndexPaths:update.deletedRowIndexPaths
                           withRowAnimation:self.deleteRowAnimation];
     [self.tableView insertRowsAtIndexPaths:update.insertedRowIndexPaths
@@ -448,6 +452,7 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     }];
 
     [self.tableView endUpdates];
+    [CATransaction commit];
 }
 
 -(void)performAnimatedUpdate:(void (^)(UITableView *))animationBlock
